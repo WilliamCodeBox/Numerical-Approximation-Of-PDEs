@@ -2,6 +2,7 @@
 ###                         Options                           ###
 #################################################################
 option(BUILD_TESTS "Build the tests" ON)
+option(AUTO_RUN_TESTS "Automatically run all the tests" ON)
 
 #################################################################
 ###                          vcpkg                            ###
@@ -36,16 +37,17 @@ find_package(Eigen3 CONFIG REQUIRED)
 ###                         Sources                           ###
 #################################################################
 set(
-    LIB_DEMO_SOURCE_FILES
-    ${PROJECT_SOURCE_DIR}/source/demo.cpp)
+    Euler_EXP_SOURCE_FILES
+    ${PROJECT_SOURCE_DIR}/source/ode-euler-exp.cpp)
 
 #################################################################
 ###                         Targets                           ###
 #################################################################
 set                       (PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-add_library               (demo SHARED ${LIB_DEMO_SOURCE_FILES})
-target_include_directories(demo PUBLIC ${PROJECT_INCLUDE_DIR})
-set_target_properties     (demo PROPERTIES CXX_STANDARD 11)
+add_library               (euler SHARED ${Euler_EXP_SOURCE_FILES})
+target_include_directories(euler PUBLIC ${PROJECT_INCLUDE_DIR})
+target_link_libraries     (euler PUBLIC Eigen3::Eigen)
+set_target_properties     (euler PROPERTIES CXX_STANDARD 11)
 
 
 #################################################################
@@ -58,5 +60,12 @@ set_target_properties     (demo PROPERTIES CXX_STANDARD 11)
 #################################################################
 if(BUILD_TESTS)
     add_subdirectory(test)
+
+    if(AUTO_RUN_TESTS)
+        # run Catch2 tests automatically
+        execute_process(COMMAND ${CMAKE_BINARY_DIR}/test/NumalTests 
+                        --durations yes -s --use-colour yes)
+    endif(AUTO_RUN_TESTS)
+
 endif()
 
