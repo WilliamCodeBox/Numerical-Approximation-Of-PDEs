@@ -5,8 +5,9 @@
  * @file ode-euler-exp.hpp
  * @author liu chang
  * @date 12 May 2020
- * @brief An explicit Euler scheme for ODE
- * 
+ * @brief An explicit Euler scheme for ODE 
+ * @details
+ * The methods within this file can be used to solve problems like
  * \f[ 
  *      u^{\prime}(t) + \alpha u(t) = f(t) 
  * \f]
