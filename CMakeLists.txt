@@ -1,0 +1,62 @@
+#################################################################
+###                         Options                           ###
+#################################################################
+option(BUILD_TESTS "Build the tests" ON)
+
+#################################################################
+###                          vcpkg                            ###
+#################################################################
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      CACHE STRING "")
+endif()
+
+#################################################################
+###                         Project                           ###
+#################################################################
+cmake_minimum_required(VERSION 3.7)
+project               (numalgopdes VERSION 1.0.0 LANGUAGES CXX)
+
+#################################################################
+###                         Guards                            ###
+#################################################################
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(WARNING "In-source build detected")
+    message(STATUS "Out-of-source build is preferred")
+    message(STATUS "   Create a separate directory, named `build` for convention")
+    message(STATUS "   and run CMake again")
+endif()
+
+#################################################################
+###                       Dependencies                        ###
+#################################################################
+find_package(Eigen3 CONFIG REQUIRED)
+
+#################################################################
+###                         Sources                           ###
+#################################################################
+set(
+    LIB_DEMO_SOURCE_FILES
+    ${PROJECT_SOURCE_DIR}/source/demo.cpp)
+
+#################################################################
+###                         Targets                           ###
+#################################################################
+set                       (PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+add_library               (demo SHARED ${LIB_DEMO_SOURCE_FILES})
+target_include_directories(demo PUBLIC ${PROJECT_INCLUDE_DIR})
+set_target_properties     (demo PROPERTIES CXX_STANDARD 11)
+
+
+#################################################################
+###                        Install                            ###
+#################################################################
+
+
+#################################################################
+###                          Tests                            ###
+#################################################################
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif()
+
